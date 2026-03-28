@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lumino Studio — Creative Agency</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── TOKENS ─────────────────────────────────────────────── */
+    :root {
+      --cream:   #FAF7F2;
+      --sand:    #EDE8DF;
+      --clay:    #C9B99A;
+      --bark:    #7A5C3E;
+      --ink:     #1E1A16;
+      --sage:    #7A9E87;
+      --sage-lt: #EAF1EC;
+      --white:   #FFFFFF;
+      --shadow:  rgba(30,26,22,.08);
+
+      --ff-display: 'Playfair Display', Georgia, serif;
+      --ff-body:    'DM Sans', sans-serif;
+
+      --r-card: 20px;
+      --r-btn:  50px;
+
+      --transition: .35s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ─── RESET ──────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: var(--ff-body);
+      font-size: 16px;
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ─── UTILITY ────────────────────────────────────────────── */
+    .container {
+      width: min(1120px, 92vw);
+      margin-inline: auto;
+    }
+    .section-label {
+      display: inline-block;
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--bark);
+      background: var(--sand);
+      padding: .35em 1em;
+      border-radius: var(--r-btn);
+      margin-bottom: 1.4rem;
+    }
+
+    /* ─── NAVBAR ─────────────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      inset-block-start: 0;
+      width: 100%;
+      z-index: 100;
+      padding: 1.1rem 0;
+      transition: background var(--transition), box-shadow var(--transition);
+    }
+    .nav.scrolled {
+      background: rgba(250,247,242,.92);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 var(--sand);
+    }
+    .nav__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav__logo {
+      font-family: var(--ff-display);
+      font-size: 1.35rem;
+      letter-spacing: .01em;
+    }
+    .nav__logo span { color: var(--sage); }
+    .nav__links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+    .nav__links a {
+      font-size: .88rem;
+      font-weight: 500;
+      color: var(--ink);
+      opacity: .7;
+      transition: opacity var(--transition);
+    }
+    .nav__links a:hover { opacity: 1; }
+    .nav__cta {
+      display: none;
+    }
+    @media (min-width: 768px) {
+      .nav__cta {
+        display: inline-flex;
+        align-items: center;
+        gap: .5rem;
+        padding: .55em 1.3em;
+        border-radius: var(--r-btn);
+        background: var(--ink);
+        color: var(--cream);
+        font-size: .85rem;
+        font-weight: 500;
+        transition: background var(--transition), transform var(--transition);
+      }
+      .nav__cta:hover { background: var(--bark); transform: translateY(-1px); }
+    }
+    .nav__burger {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .nav__burger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--ink);
+      border-radius: 2px;
+      transition: transform var(--transition), opacity var(--transition);
+    }
+    .nav__burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav__burger.open span:nth-child(2) { opacity: 0; }
+    .nav__burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    @media (min-width: 768px) {
+      .nav__burger { display: none; }
+      .nav__links { display: flex; }
+    }
+    .nav__mobile {
+      display: none;
+      flex-direction: column;
+      gap: 0;
+      background: var(--cream);
+      border-top: 1px solid var(--sand);
+      padding: 1.2rem 0 1.6rem;
+      list-style: none;
+    }
+    .nav__mobile.open { display: flex; }
+    .nav__mobile li a {
+      display: block;
+      padding: .7rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 400;
+      opacity: .8;
+    }
+    @media (min-width: 768px) {
+      .nav__mobile { display: none !important; }
+    }
+
+    /* ─── HERO ───────────────────────────────────────────────── */
+    .hero {
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: 8rem 0 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero__blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(70px);
+      opacity: .45;
+      pointer-events: none;
+    }
+    .hero__blob--1 {
+      width: 520px; height: 520px;
+      background: radial-gradient(circle, #d4c5b0 0%, transparent 70%);
+      top: -100px; right: -120px;
+    }
+    .hero__blob--2 {
+      width: 380px; height: 380px;
+      background: radial-gradient(circle, #c9dfd1 0%, transparent 70%);
+      bottom: -80px; left: -80px;
+    }
+    .hero__content {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      animation: fadeUp .9s ease both;
+    }
+    .hero__eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: .55rem;
+      font-size: .8rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      font-weight: 500;
+      color: var(--bark);
+      margin-bottom: 1.8rem;
+    }
+    .hero__eyebrow::before,
+    .hero__eyebrow::after {
+      content: '';
+      width: 32px;
+      height: 1px;
+      background: var(--clay);
+    }
+    .hero__title {
+      font-family: var(--ff-display);
+      font-size: clamp(2.6rem, 7vw, 5.2rem);
+      line-height: 1.08;
+      letter-spacing: -.02em;
+      margin-bottom: 1.4rem;
+    }
+    .hero__title em {
+      font-style: italic;
+      color: var(--sage);
+    }
+    .hero__subtitle {
+      max-width: 520px;
+      margin-inline: auto;
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: var(--ink);
+      opacity: .65;
+      margin-bottom: 2.8rem;
+    }
+    .hero__actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .55rem;
+      padding: .85em 2em;
+      border-radius: var(--r-btn);
+      font-family: var(--ff-body);
+      font-size: .95rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn--whatsapp {
+      background: #25D366;
+      color: #fff;
+      box-shadow: 0 6px 24px rgba(37,211,102,.3);
+    }
+    .btn--whatsapp:hover { box-shadow: 0 10px 32px rgba(37,211,102,.4); }
+    .btn--outline {
+      background: transparent;
+      color: var(--ink);
+      border: 1.5px solid var(--clay);
+    }
+    .btn--outline:hover { background: var(--sand); }
+    .btn--dark {
+      background: var(--ink);
+      color: var(--cream);
+      box-shadow: 0 4px 16px var(--shadow);
+    }
+    .btn--dark:hover { background: var(--bark); box-shadow: 0 8px 28px var(--shadow); }
+
+    /* WhatsApp icon inline SVG */
+    .icon-wa { width: 20px; height: 20px; flex-shrink: 0; }
+
+    .hero__scroll {
+      margin-top: 4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .5rem;
+      font-size: .72rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--ink);
+      opacity: .4;
+      animation: bounce 2.2s ease infinite;
+    }
+    .hero__scroll svg { width: 20px; }
+
+    /* ─── ABOUT ──────────────────────────────────────────────── */
+    .about {
+      padding: 7rem 0;
+      background: var(--white);
+    }
+    .about__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3.5rem;
+      align-items: center;
+    }
+    @media (min-width: 768px) {
+      .about__grid { grid-template-columns: 1fr 1fr; gap: 5rem; }
+    }
+    .about__visual {
+      position: relative;
+    }
+    .about__img-wrap {
+      border-radius: 28px;
+      overflow: hidden;
+      background: var(--sand);
+      aspect-ratio: 4/3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .about__placeholder {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--sand) 0%, var(--clay) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--ff-display);
+      font-size: 5rem;
+      opacity: .5;
+    }
+    .about__badge {
+      position: absolute;
+      bottom: -1.5rem;
+      right: -1.5rem;
+      background: var(--ink);
+      color: var(--cream);
+      padding: 1.1rem 1.5rem;
+      border-radius: 18px;
+      text-align: center;
+      box-shadow: 0 8px 32px var(--shadow);
+    }
+    .about__badge-num {
+      font-family: var(--ff-display);
+      font-size: 2.4rem;
+      line-height: 1;
+      color: var(--sage);
+    }
+    .about__badge-txt {
+      font-size: .78rem;
+      font-weight: 300;
+      opacity: .7;
+      margin-top: .25rem;
+    }
+    .about__title {
+      font-family: var(--ff-display);
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      line-height: 1.15;
+      letter-spacing: -.015em;
+      margin-bottom: 1.2rem;
+    }
+    .about__body {
+      font-size: 1rem;
+      font-weight: 300;
+      opacity: .7;
+      margin-bottom: 1rem;
+    }
+    .about__values {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+    .about__value {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      font-size: .88rem;
+      font-weight: 500;
+    }
+    .about__value::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--sage);
+      flex-shrink: 0;
+    }
+
+    /* ─── SERVICES ───────────────────────────────────────────── */
+    .services {
+      padding: 7rem 0;
+      background: var(--cream);
+    }
+    .services__head {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+    .services__title {
+      font-family: var(--ff-display);
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      letter-spacing: -.015em;
+    }
+    .services__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 640px) {
+      .services__grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (min-width: 900px) {
+      .services__grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    .card {
+      background: var(--white);
+      border-radius: var(--r-card);
+      padding: 2.2rem 2rem;
+      box-shadow: 0 2px 12px var(--shadow);
+      transition: transform var(--transition), box-shadow var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%; height: 3px;
+      background: linear-gradient(90deg, var(--sage), var(--clay));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform var(--transition);
+    }
+    .card:hover { transform: translateY(-5px); box-shadow: 0 16px 40px var(--shadow); }
+    .card:hover::after { transform: scaleX(1); }
+    .card__icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      background: var(--sage-lt);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.4rem;
+      font-size: 1.5rem;
+    }
+    .card__title {
+      font-family: var(--ff-display);
+      font-size: 1.25rem;
+      margin-bottom: .7rem;
+    }
+    .card__body {
+      font-size: .92rem;
+      font-weight: 300;
+      opacity: .65;
+      line-height: 1.7;
+    }
+    .card__link {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      margin-top: 1.2rem;
+      font-size: .85rem;
+      font-weight: 500;
+      color: var(--sage);
+      transition: gap var(--transition);
+    }
+    .card__link:hover { gap: .7rem; }
+
+    /* ─── CONTACT ────────────────────────────────────────────── */
+    .contact {
+      padding: 7rem 0;
+      background: var(--white);
+    }
+    .contact__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+    @media (min-width: 768px) {
+      .contact__grid { grid-template-columns: 1fr 1.2fr; align-items: start; }
+    }
+    .contact__info-title {
+      font-family: var(--ff-display);
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      letter-spacing: -.015em;
+      margin-bottom: 1rem;
+    }
+    .contact__info-body {
+      font-size: 1rem;
+      font-weight: 300;
+      opacity: .65;
+      margin-bottom: 2rem;
+    }
+    .contact__details {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 2.2rem;
+    }
+    .contact__detail {
+      display: flex;
+      align-items: center;
+      gap: .9rem;
+      font-size: .92rem;
+    }
+    .contact__detail-icon {
+      width: 40px; height: 40px;
+      border-radius: 12px;
+      background: var(--sage-lt);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.1rem;
+    }
+    .contact__form {
+      background: var(--cream);
+      border-radius: 24px;
+      padding: 2.4rem 2rem;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    @media (min-width: 480px) {
+      .form-row { grid-template-columns: 1fr 1fr; }
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: .4rem;
+    }
+    .form-group label {
+      font-size: .8rem;
+      font-weight: 500;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      opacity: .6;
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      background: var(--white);
+      border: 1.5px solid var(--sand);
+      border-radius: 12px;
+      padding: .8em 1.1em;
+      font-family: var(--ff-body);
+      font-size: .95rem;
+      color: var(--ink);
+      transition: border-color var(--transition);
+      outline: none;
+      width: 100%;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus { border-color: var(--sage); }
+    .form-group textarea { resize: vertical; min-height: 110px; }
+    .form-submit {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 1.2rem;
+    }
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 1.5rem;
+      color: var(--sage);
+      font-weight: 500;
+    }
+
+    /* ─── MAP ────────────────────────────────────────────────── */
+    .map-section {
+      height: 400px;
+      position: relative;
+      overflow: hidden;
+    }
+    .map-section iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      filter: grayscale(.25) contrast(.95);
+    }
+
+    /* ─── FOOTER ─────────────────────────────────────────────── */
+    .footer {
+      background: var(--ink);
+      color: var(--cream);
+      padding: 4rem 0 2.5rem;
+    }
+    .footer__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      margin-bottom: 3rem;
+    }
+    @media (min-width: 640px) {
+      .footer__grid { grid-template-columns: 2fr 1fr 1fr; }
+    }
+    .footer__brand-name {
+      font-family: var(--ff-display);
+      font-size: 1.4rem;
+      margin-bottom: .6rem;
+    }
+    .footer__brand-name span { color: var(--sage); }
+    .footer__brand-desc {
+      font-size: .88rem;
+      font-weight: 300;
+      opacity: .5;
+      max-width: 260px;
+      line-height: 1.6;
+    }
+    .footer__col-title {
+      font-size: .78rem;
+      font-weight: 500;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      opacity: .4;
+      margin-bottom: 1.1rem;
+    }
+    .footer__links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .65rem;
+    }
+    .footer__links a {
+      font-size: .88rem;
+      font-weight: 300;
+      opacity: .6;
+      transition: opacity var(--transition);
+    }
+    .footer__links a:hover { opacity: 1; }
+    .footer__bottom {
+      border-top: 1px solid rgba(255,255,255,.08);
+      padding-top: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer__copy {
+      font-size: .8rem;
+      opacity: .35;
+    }
+    .footer__social {
+      display: flex;
+      gap: .8rem;
+    }
+    .footer__social a {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .9rem;
+      opacity: .55;
+      transition: opacity var(--transition), border-color var(--transition);
+    }
+    .footer__social a:hover { opacity: 1; border-color: var(--sage); }
+
+    /* ─── ANIMATIONS ─────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(6px); }
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: .1s; }
+    .reveal-delay-2 { transition-delay: .2s; }
+    .reveal-delay-3 { transition-delay: .3s; }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAVBAR ──────────────────────────────────────────────── -->
+<nav class="nav" id="nav">
+  <div class="container">
+    <div class="nav__inner">
+      <a href="#" class="nav__logo">Lumino<span>.</span></a>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <a href="https://wa.me/5491100000000" target="_blank" class="nav__cta">
+        <svg class="icon-wa" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Chat on WhatsApp
+      </a>
+      <button class="nav__burger" id="burger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <ul class="nav__mobile" id="mobileMenu">
+      <li><a href="#about">About</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ─── HERO ────────────────────────────────────────────────── -->
+<section class="hero" id="home">
+  <div class="hero__blob hero__blob--1"></div>
+  <div class="hero__blob hero__blob--2"></div>
+  <div class="container">
+    <div class="hero__content">
+      <p class="hero__eyebrow">Creative Studio</p>
+      <h1 class="hero__title">
+        We craft<br/>
+        <em>beautiful</em> brands<br/>
+        that matter
+      </h1>
+      <p class="hero__subtitle">
+        Elevate your business with thoughtful design, compelling storytelling, and digital experiences people love.
+      </p>
+      <div class="hero__actions">
+        <a href="https://wa.me/5491100000000?text=Hello!%20I%27d%20like%20to%20know%20more%20about%20your%20services." target="_blank" class="btn btn--whatsapp">
+          <svg class="icon-wa" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Chat on WhatsApp
+        </a>
+        <a href="#services" class="btn btn--outline">View Services</a>
+      </div>
+      <div class="hero__scroll">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        Scroll
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ABOUT ────────────────────────────────────────────────── -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="about__grid">
+      <div class="about__visual reveal">
+        <div class="about__img-wrap">
+          <div class="about__placeholder">✦</div>
+        </div>
+        <div class="about__badge">
+          <div class="about__badge-num">8+</div>
+          <div class="about__badge-txt">Years of<br/>excellence</div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <span class="section-label">Our Story</span>
+        <h2 class="about__title">We're a studio obsessed with craft</h2>
+        <p class="about__body">
+          Founded with a single conviction — that small businesses deserve world-class design — Lumino has grown into a trusted partner for entrepreneurs, startups, and local brands ready to stand out.
+        </p>
+        <p class="about__body">
+          We blend strategic thinking with visual excellence to build brands and digital experiences that resonate deeply with real people. Every project is personal to us.
+        </p>
+        <div class="about__values">
+          <span class="about__value">Intentional Design</span>
+          <span class="about__value">Honest Collaboration</span>
+          <span class="about__value">Lasting Results</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SERVICES ─────────────────────────────────────────────── -->
+<section class="services" id="services">
+  <div class="container">
+    <div class="services__head reveal">
+      <span class="section-label">What We Do</span>
+      <h2 class="services__title">Services built for growth</h2>
+    </div>
+    <div class="services__grid">
+      <div class="card reveal reveal-delay-1">
+        <div class="card__icon">🎨</div>
+        <h3 class="card__title">Brand Identity</h3>
+        <p class="card__body">Logos, color systems, typography, and brand guidelines that set you apart and keep you consistent across every touchpoint.</p>
+        <a href="#contact" class="card__link">Get started →</a>
+      </div>
+      <div class="card reveal reveal-delay-2">
+        <div class="card__icon">💻</div>
+        <h3 class="card__title">Web Design</h3>
+        <p class="card__body">Fast, beautiful, mobile-first websites designed to convert visitors into customers — from landing pages to full e-commerce.</p>
+        <a href="#contact" class="card__link">Get started →</a>
+      </div>
+      <div class="card reveal reveal-delay-3">
+        <div class="card__icon">📣</div>
+        <h3 class="card__title">Social Media</h3>
+        <p class="card__body">Content strategy, graphic templates, and campaign visuals that grow your audience and keep them engaged day after day.</p>
+        <a href="#contact" class="card__link">Get started →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CONTACT ───────────────────────────────────────────────── -->
+<section class="contact" id="contact">
+  <div class="container">
+    <div class="contact__grid">
+      <div class="reveal">
+        <span class="section-label">Get In Touch</span>
+        <h2 class="contact__info-title">Let's build something together</h2>
+        <p class="contact__info-body">Have a project in mind? We'd love to hear about it. Drop us a message or reach us directly on WhatsApp for a faster reply.</p>
+        <div class="contact__details">
+          <div class="contact__detail">
+            <div class="contact__detail-icon">📍</div>
+            <span>123 Studio Ave, Buenos Aires, AR</span>
+          </div>
+          <div class="contact__detail">
+            <div class="contact__detail-icon">✉️</div>
+            <span>hello@luminostudio.co</span>
+          </div>
+          <div class="contact__detail">
+            <div class="contact__detail-icon">📞</div>
+            <span>+54 9 11 0000-0000</span>
+          </div>
+        </div>
+        <a href="https://wa.me/5491100000000?text=Hi!%20I%27d%20like%20to%20start%20a%20project." target="_blank" class="btn btn--whatsapp">
+          <svg class="icon-wa" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          WhatsApp us now
+        </a>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <div class="contact__form">
+          <form id="contactForm" novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="fname">First name</label>
+                <input type="text" id="fname" name="fname" placeholder="Alex" required />
+              </div>
+              <div class="form-group">
+                <label for="lname">Last name</label>
+                <input type="text" id="lname" name="lname" placeholder="Doe" required />
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom:1rem">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" placeholder="alex@email.com" required />
+            </div>
+            <div class="form-group" style="margin-bottom:1rem">
+              <label for="service">Service</label>
+              <select id="service" name="service">
+                <option value="">— Select a service —</option>
+                <option>Brand Identity</option>
+                <option>Web Design</option>
+                <option>Social Media</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:1rem">
+              <label for="message">Message</label>
+              <textarea id="message" name="message" placeholder="Tell us about your project…" required></textarea>
+            </div>
+            <div class="form-submit">
+              <button type="submit" class="btn btn--dark">Send Message →</button>
+            </div>
+          </form>
+          <div class="form-success" id="formSuccess">
+            ✅ Thanks! We'll get back to you within 24 hours.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── MAP ──────────────────────────────────────────────────── -->
+<div class="map-section">
+  <iframe
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3285.0!2d-58.6899!3d-34.5226!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzTCsDMxJzIxLjQiUyA1OMKwNDEnMjMuNiJX!5e0!3m2!1sen!2sar!4v1690000000000!5m2!1sen!2sar"
+    allowfullscreen=""
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade"
+    title="Our Location"
+  ></iframe>
+</div>
+
+<!-- ─── FOOTER ───────────────────────────────────────────────── -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__brand-name">Lumino<span>.</span></div>
+        <p class="footer__brand-desc">A boutique creative studio helping small businesses grow through thoughtful design.</p>
+      </div>
+      <div>
+        <p class="footer__col-title">Navigate</p>
+        <ul class="footer__links">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer__col-title">Services</p>
+        <ul class="footer__links">
+          <li><a href="#services">Brand Identity</a></li>
+          <li><a href="#services">Web Design</a></li>
+          <li><a href="#services">Social Media</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p class="footer__copy">© 2025 Lumino Studio. All rights reserved.</p>
+      <div class="footer__social">
+        <a href="#" aria-label="Instagram">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </a>
+        <a href="#" aria-label="LinkedIn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        </a>
+        <a href="https://wa.me/5491100000000" aria-label="WhatsApp" target="_blank">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ─── JS ───────────────────────────────────────────────────── -->
+<script>
+  // Navbar scroll
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  }, { passive: true });
+
+  // Mobile burger
+  const burger = document.getElementById('burger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  burger.addEventListener('click', () => {
+    burger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+  });
+  mobileMenu.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      burger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+    });
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Contact form
+  const form = document.getElementById('contactForm');
+  const success = document.getElementById('formSuccess');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+    form.style.display = 'none';
+    success.style.display = 'block';
+  });
+</script>
+</body>
+</html>
